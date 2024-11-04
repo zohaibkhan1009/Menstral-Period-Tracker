@@ -1,0 +1,38 @@
+import time
+from datetime import datetime, timedelta
+from plyer import notification
+
+# Menstrual cycle date range (change this if your dates vary each month)
+CYCLE_START_DAY = 5  # Start of the cycle
+
+def send_notification():
+    """Sends a reminder notification."""
+    notification.notify(
+        title="Menstrual Cycle Reminder",
+        message="Your monthly cycle is about to happen tomorrow. Please be prepared.",
+        app_name="Cycle Tracker",
+        timeout=10  # Notification will disappear after 10 seconds
+    )
+
+def check_and_notify():
+    """Checks if today is one day before the cycle starts and sends notifications at shorter intervals for testing."""
+    today = datetime.now()
+    cycle_start = today.replace(day=CYCLE_START_DAY)
+    
+    # Check if today is one day before the start of the cycle
+    if today.day == (CYCLE_START_DAY - 1):
+        print("Sending notifications every 30 minute for testing.")
+        # Send notifications every 30 minute for testing
+        while today.day == (CYCLE_START_DAY - 1):
+            send_notification()
+            time.sleep(1800)  # Wait 30 minute (1800 seconds) for testing
+            today = datetime.now()
+    else:
+        # Wait until midnight to check again
+        time_until_midnight = (datetime.combine(today.date() + timedelta(days=1), datetime.min.time()) - today).seconds
+        time.sleep(time_until_midnight)
+        check_and_notify()  # Re-run check at midnight
+
+# Start the menstrual cycle tracker
+check_and_notify()
+#just need to change thecycle date and the time interval for notification and the code will run in almost any system
